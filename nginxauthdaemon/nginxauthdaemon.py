@@ -4,9 +4,11 @@ from flask import Flask
 from flask import render_template, request, make_response, redirect, g
 from Crypto.Cipher import DES
 
+import config
+
 
 app = Flask(__name__)
-app.config.from_object('config.DefaultConfig')
+app.config.from_object(config.DefaultConfig)
 app.config.from_envvar('DAEMON_SETTINGS', True)
 
 
@@ -15,7 +17,7 @@ def get_authenticator():
     if auth is None:
         class_name = app.config['AUTHENTICATOR']
         parts = class_name.split('.')
-        module = importlib.import_module(".".join(parts[:-1]))
+        module = importlib.import_module("nginxauthdaemon."+".".join(parts[:-1]))
         cls = getattr(module, parts[-1])
         auth = g._authenticator = cls(app.config)
     return auth
