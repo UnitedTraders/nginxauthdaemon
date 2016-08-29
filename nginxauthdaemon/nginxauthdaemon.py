@@ -4,9 +4,11 @@ from flask import Flask
 from flask import render_template, request, make_response, redirect, g
 from Crypto.Cipher import DES
 
+import config
+
 
 app = Flask(__name__)
-app.config.from_object('config.DefaultConfig')
+app.config.from_object(config.DefaultConfig)
 app.config.from_envvar('DAEMON_SETTINGS', True)
 
 
