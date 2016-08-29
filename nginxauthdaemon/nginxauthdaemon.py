@@ -17,7 +17,7 @@ def get_authenticator():
     if auth is None:
         class_name = app.config['AUTHENTICATOR']
         parts = class_name.split('.')
-        module = importlib.import_module(".".join(parts[:-1]))
+        module = importlib.import_module("nginxauthdaemon."+".".join(parts[:-1]))
         cls = getattr(module, parts[-1])
         auth = g._authenticator = cls(app.config)
     return auth
