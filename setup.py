@@ -13,7 +13,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='nginxauthdaemon',
-    version='1.0.0a2',
+    version='1.0.0a3',
     description='Authentication daemon for nginx-proxied or nginx-served applications',
     long_description=long_description,
     url='https://github.com/akurdyukov/nginxauthdaemon',
