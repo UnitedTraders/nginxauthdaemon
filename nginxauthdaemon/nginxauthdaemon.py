@@ -6,7 +6,7 @@ from Crypto.Cipher import DES
 
 
 app = Flask(__name__)
-app.config.from_object('config.DefaultConfig')
+app.config.from_object('nginxauthdaemon.config.DefaultConfig')
 app.config.from_envvar('DAEMON_SETTINGS', True)
 
 
