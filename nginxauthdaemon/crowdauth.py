@@ -15,4 +15,8 @@ class CrowdAuthenticator(Authenticator):
 
     def authenticate(self, username, password):
         result = self._cs.auth_user(username, password)
+        if result == None:
+            # auth failed
+            return False
+        # auth succeeded
         return result.get('name') == username
