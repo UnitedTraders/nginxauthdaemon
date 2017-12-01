@@ -81,7 +81,7 @@ def show_login():
             resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
             return resp
         else:
-            return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password")
+            return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
 
 
 @app.route('/auth/validate', methods=['GET'])
