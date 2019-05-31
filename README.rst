@@ -24,6 +24,15 @@ Installation and Configuration
 
 9. Test your setup.
 
+Docker
+------------------------------
+
+* Build: ``docker build -t nginxauthdaemon .``
+
+* Launch: ``docker run -p 5000:5000 -v $(pwd)/example.cfg:/example.cfg -e DAEMON_SETTINGS=/example.cfg nginxauthdaemon``
+
+* Compose file located in ``docker-compose.yml.sample``
+
 Daemon configuration
 --------------------
 

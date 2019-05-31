@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  nginxauthdaemon:
+    image: nginxauthdaemon:latest
+    environment:
+      - DAEMON_SETTINGS=/example.cfg
+    ports:
+      - 5000:5000
+    volumes:
+      - example.cfg:/example.cfg

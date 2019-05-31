@@ -44,14 +44,14 @@ setup(
     install_requires=[
         'click==6.6',
         'Crowd==1.0.0',
-        'Flask==0.11.1',
+        'Flask==0.12.3',
         'itsdangerous==0.24',
-        'Jinja2==2.8',
+        'Jinja2==2.10.1',
         'lxml==3.6.1',
         'MarkupSafe==0.23',
         'pyasn1==0.1.9',
         'pycrypto==2.6.1',
-        'requests==2.11.0',
+        'requests==2.20.0',
         'Werkzeug==0.11.10'
     ],
     extras_require={
