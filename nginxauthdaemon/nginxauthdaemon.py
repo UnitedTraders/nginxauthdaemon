@@ -8,7 +8,7 @@ from Crypto.Cipher import DES
 app = Flask(__name__)
 app.config.from_object('nginxauthdaemon.config.DefaultConfig')
 app.config.from_envvar('DAEMON_SETTINGS', True)
-
+custom_auth_url_prefix=app.config['AUTH_URL_PREFIX']
 
 def get_authenticator():
     auth = getattr(g, '_authenticator', None)
@@ -66,7 +66,7 @@ def decode_session_cookie(cookie):
         return None
 
 
-@app.route('/auth/login', methods=['GET', 'POST'])
+@app.route(custom_auth_url_prefix +'/login', methods=['GET', 'POST'])
 def show_login():
     if request.method == 'GET':
         target = request.headers.get(app.config['TARGET_HEADER'])
@@ -84,7 +84,7 @@ def show_login():
             return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
 
 
-@app.route('/auth/validate', methods=['GET'])
+@app.route(custom_auth_url_prefix +'/validate', methods=['GET'])
 def validate():
     # check session
     session_cookie = request.cookies.get(app.config['SESSION_COOKIE'])
