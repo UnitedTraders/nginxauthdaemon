@@ -8,7 +8,7 @@ from Crypto.Cipher import DES
 app = Flask(__name__)
 app.config.from_object('nginxauthdaemon.config.DefaultConfig')
 app.config.from_envvar('DAEMON_SETTINGS', True)
-
+custom_login_url=app.config['LOGIN_URL']
 
 def get_authenticator():
     auth = getattr(g, '_authenticator', None)
@@ -66,7 +66,7 @@ def decode_session_cookie(cookie):
         return None
 
 
-@app.route('/auth/login', methods=['GET', 'POST'])
+@app.route(custom_login_url, methods=['GET', 'POST'])
 def show_login():
     if request.method == 'GET':
         target = request.headers.get(app.config['TARGET_HEADER'])
