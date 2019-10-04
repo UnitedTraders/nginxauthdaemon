@@ -29,7 +29,7 @@ Docker
 
 * Build: ``docker build -t nginxauthdaemon .``
 
-* Launch: ``docker run -p 5000:5000 -v $(pwd)/example.cfg:/example.cfg -e DAEMON_SETTINGS=/example.cfg nginxauthdaemon``
+* Launch: ``docker run -p 5000:5000 -v $(pwd)/example.cfg:/example.cfg -e DAEMON_SETTINGS=/example.cfg -e WEB_CONCURRENCY=4 nginxauthdaemon``
 
 * Compose file located in ``docker-compose.yml.sample``
 

@@ -4,7 +4,8 @@ services:
   nginxauthdaemon:
     image: nginxauthdaemon:latest
     environment:
-      - DAEMON_SETTINGS=/example.cfg
+      - DAEMON_SETTINGS=/example.cfg      # config location
+      - WEB_CONCURRENCY=4                 # number of gunicorn workers
     ports:
       - 5000:5000
     volumes:

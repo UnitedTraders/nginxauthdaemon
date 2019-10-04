@@ -43,8 +43,8 @@ setup(
     },
     install_requires=[
         'click==6.6',
-        'Crowd==1.0.0',
-        'Flask==0.12.3',
+        'Crowd==2.0.1',
+        'Flask==1.1.1',
         'itsdangerous==0.24',
         'Jinja2==2.10.1',
         'lxml==3.6.1',
@@ -52,7 +52,7 @@ setup(
         'pyasn1==0.1.9',
         'pycrypto==2.6.1',
         'requests==2.20.0',
-        'Werkzeug==0.11.10'
+        'Werkzeug==0.16.0'
     ],
     extras_require={
         'dev': ['check-manifest'],
