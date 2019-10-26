@@ -113,6 +113,55 @@ Example configuration::
         error_page 401 403 =200 /auth/login;
     }
 
+HAProxy Configuration
+---------------------
+
+Install `haproxy-auth-request` script from https://github.com/TimWolla/haproxy-auth-request/
+
+Sample HAProxy config (thanks to Dmitry Kamenskikh)::
+
+    global
+            log /dev/log        local0
+            log /dev/log        local1 notice
+            chroot /var/lib/haproxy
+            stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+            stats timeout 30s
+            user haproxy
+            group haproxy
+            daemon
+
+            lua-load /usr/share/haproxy/auth-request.lua
+
+    defaults
+            log        global
+            mode        http
+            option        httplog
+            option        dontlognull
+            timeout connect 5000
+            timeout client  50000
+            timeout server  50000
+
+    frontend main
+            mode http
+            bind :80
+
+            acl management path_beg /management
+            acl login_page path -i /auth/login
+            http-request lua.auth-request auth_request /auth/validate if management
+            acl login_success var(txn.auth_response_successful) -m bool
+            http-request add-header X-target %[path] if management
+            http-request set-path /auth/login if management ! login_success
+            use_backend auth_request if login_page
+
+            default_backend just200
+
+    backend just200
+            server main 172.17.0.1:3000 check
+
+    backend auth_request
+            mode http
+            server main 172.17.0.1:5000 check
+
 Limitations
 -----------
 
