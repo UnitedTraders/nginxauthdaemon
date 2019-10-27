@@ -1,6 +1,11 @@
 nginxauthdaemon
 ===============
 
+|ImageLink|_
+
+.. |ImageLink| image:: https://snyk.io/test/github/UnitedTraders/nginxauthdaemon/badge.svg
+.. _ImageLink: https://snyk.io/test/github/UnitedTraders/nginxauthdaemon/
+
 Authentication daemon for nginx-proxied or nginx-served applications. 
 
 Installation and Configuration
