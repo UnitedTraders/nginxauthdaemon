@@ -12,7 +12,7 @@ Installation and Configuration
 
 3. Install nginxauthdaemon from pypi ``pip install nginxauthdaemon``
 
-4. Create config file overriding default values, see [Daemon configuration]. *NB!* You need to override default ``SESSION_SALT``, ``DES_IV`` and ``DES_KEY`` for security.
+4. Create config file overriding default values, see [Daemon configuration]. *NB!* You need to override default ``SESSION_SALT`` and ``DES_KEY`` for security.
 
 5. Setup env variable ``DAEMON_SETTINGS`` pointing to your config file.
 
@@ -48,8 +48,6 @@ Basic configuration properties are:
 | TARGET_HEADER  | Header used to pass protected URL from NGINX                   |
 +----------------+----------------------------------------------------------------+
 | SESSION_SALT   | Long string used a salt for creation of session key.           |
-+----------------+----------------------------------------------------------------+
-| DES_IV         | 8byte initial vector for DES algorithm                         |
 +----------------+----------------------------------------------------------------+
 | DES_KEY        | 8byte DES encryption key                                       |
 +----------------+----------------------------------------------------------------+
