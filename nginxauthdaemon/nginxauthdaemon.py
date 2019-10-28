@@ -45,18 +45,18 @@ def parse_authorization(original_value):
 
 def create_session_cookie(username):
     """Create session cookie. Returns string"""
-    des = DES.new(app.config['DES_KEY'], DES.MODE_ECB, app.config['DES_IV'])
+    des = DES.new(app.config['DES_KEY'], DES.MODE_ECB)
     clear_text = username + app.config['SESSION_SALT']
     if len(clear_text) % 8 != 0:
         clear_text = clear_text.ljust((len(clear_text) / 8 + 1) * 8, ' ')
-    return base64.encodestring(des.encrypt(clear_text))
+    return base64.encodestring(des.encrypt(clear_text.encode('utf-8')))
 
 
 def decode_session_cookie(cookie):
     """Decode session cookie and return user name"""
     try:
         encrypted = base64.decodestring(cookie)
-        des = DES.new(app.config['DES_KEY'], DES.MODE_ECB, app.config['DES_IV'])
+        des = DES.new(app.config['DES_KEY'], DES.MODE_ECB)
         decrypted = des.decrypt(encrypted).rstrip()
         session_salt = app.config['SESSION_SALT']
         if decrypted[-len(session_salt):] == session_salt:
