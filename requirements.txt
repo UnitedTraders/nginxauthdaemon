@@ -9,3 +9,4 @@ pycryptodome==3.9.0
 requests==2.20.0
 werkzeug==0.16.0
 lxml==4.4.1
+urllib3>=1.25.9
