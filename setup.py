@@ -51,8 +51,9 @@ setup(
         'MarkupSafe==0.23',
         'pyasn1==0.1.9',
         'pycryptodome == 3.9.0',
-        'requests==2.20.0',
-        'Werkzeug==0.16.0'
+        'requests>=2.24.0',
+        'Werkzeug==0.16.0',
+        'urllib3>=1.25.9'
     ],
     extras_require={
         'dev': ['check-manifest'],
