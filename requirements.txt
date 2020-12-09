@@ -8,5 +8,5 @@ pyasn1==0.1.9
 pycryptodome==3.9.0
 requests>=2.24.0
 werkzeug==0.16.0
-lxml==4.4.1
+lxml==4.6.2
 urllib3>=1.25.9
