@@ -78,6 +78,8 @@ def show_login():
         target = request.form.get('target')
         if username is not None and get_authenticator().authenticate(username, password):
             resp = redirect(target)
+            if target == custom_auth_url_prefix +'/login':
+                resp = redirect("/")
             resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
             return resp
         else:
