@@ -1,4 +1,6 @@
 import base64
+import time
+import uuid
 import importlib
 from flask import Flask
 from flask import render_template, request, make_response, redirect, g
@@ -51,6 +53,17 @@ def create_session_cookie(username):
         clear_text = clear_text.ljust((len(clear_text) / 8 + 1) * 8, ' ')
     return base64.encodestring(des.encrypt(clear_text.encode('utf-8')))
 
+def create_access_token_cookie(username):
+    """Create access token. Returns string"""
+    jwtPrivateKey = app.config['JWT_PRIVATE_KEY']
+
+    now = int(time.time()) 
+    expiresAt = now + 300 # seconds
+    payload = {'jti': uuid.uuid4(), 'jti': now, 'nbf': 0, 'iss': 'crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
+
+    jwt.encode(payload, jwtPrivateKey, algorithm='HS256')
+    
+    return "todo"
 
 def decode_session_cookie(cookie):
     """Decode session cookie and return user name"""
@@ -81,6 +94,7 @@ def show_login():
             if target == custom_auth_url_prefix +'/login':
                 resp = redirect("/")
             resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
+            resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username))
             return resp
         else:
             return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
@@ -107,7 +121,9 @@ def validate():
 
     if get_authenticator().authenticate(user_and_password[0], user_and_password[1]):
         resp = make_response("Username/password verified")
-        resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(user_and_password[0]))
+        username = user_and_password[0]
+        resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
+        resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_session_cookie(username))
         return resp
     else:
         resp = make_response("Username/password failed", 401)

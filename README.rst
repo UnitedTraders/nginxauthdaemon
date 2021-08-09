@@ -83,6 +83,13 @@ Crowd authenticator has additional options:
 | CROWD_APP_PASSWORD | Crowd application password                                |
 +--------------------+-----------------------------------------------------------+
 
+Access token options
++----------------+----------------------------------------------------------------+
+| JWT_PRIVATE_KEY     | RS256 secret key for access token signing.                |
++----------------+----------------------------------------------------------------+
+| ACCESS_TOKEN_COOKIE | Access token cookie name.                                 |
++----------------+----------------------------------------------------------------+
+
 
 
 NGINX Configuration
