@@ -11,3 +11,4 @@ werkzeug==0.16.0
 lxml==4.6.3
 urllib3>=1.25.9
 PyJWT==1.7.1
+cryptography==3.3.2

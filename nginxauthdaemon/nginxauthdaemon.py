@@ -5,6 +5,7 @@ import importlib
 from flask import Flask
 from flask import render_template, request, make_response, redirect, g
 from Crypto.Cipher import DES
+from datetime import utcnow
 
 
 app = Flask(__name__)
@@ -61,7 +62,7 @@ def create_access_token_cookie(username):
     expiresAt = now + 300 # seconds
     payload = {'jti': uuid.uuid4(), 'jti': now, 'nbf': 0, 'iss': 'crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
 
-    return jwt.encode(payload, jwtPrivateKey, algorithm='HS256')
+    return jwt.encode(payload, jwtPrivateKey, algorithm='RS256')
 
 def decode_session_cookie(cookie):
     """Decode session cookie and return user name"""
@@ -121,7 +122,7 @@ def validate():
         resp = make_response("Username/password verified")
         username = user_and_password[0]
         resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
-        resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_session_cookie(username))
+        resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username))
         return resp
     else:
         resp = make_response("Username/password failed", 401)
