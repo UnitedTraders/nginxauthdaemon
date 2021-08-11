@@ -5,7 +5,6 @@ import importlib
 from flask import Flask
 from flask import render_template, request, make_response, redirect, g
 from Crypto.Cipher import DES
-from datetime import utcnow
 
 
 app = Flask(__name__)
