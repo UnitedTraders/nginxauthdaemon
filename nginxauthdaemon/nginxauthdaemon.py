@@ -5,8 +5,10 @@ import importlib
 from flask import Flask
 from flask import render_template, request, make_response, redirect, g
 from Crypto.Cipher import DES
+from Crypto.Util.Padding import pad, unpad
 import jwt
 
+BLOCK_SIZE = 32 # Bytes
 
 app = Flask(__name__)
 app.config.from_object('nginxauthdaemon.config.DefaultConfig')
@@ -29,9 +31,9 @@ def decode_basic(auth_value):
         return None
 
     try:
-        auth_decoded = base64.b64decode(auth_value)
+        auth_decoded = base64.b64decode(auth_value).decode("utf-8")
         return auth_decoded.split(':', 2)
-    except TypeError, e:
+    except TypeError as e:
         app.logger.warn("Parsing decoded basic value %s failed. Value ignored" % auth_value, e)
         return None
 
@@ -48,11 +50,9 @@ def parse_authorization(original_value):
 
 def create_session_cookie(username):
     """Create session cookie. Returns string"""
-    des = DES.new(app.config['DES_KEY'], DES.MODE_ECB)
+    des = DES.new(bytes(app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
     clear_text = username + app.config['SESSION_SALT']
-    if len(clear_text) % 8 != 0:
-        clear_text = clear_text.ljust((len(clear_text) / 8 + 1) * 8, ' ')
-    return base64.encodestring(des.encrypt(clear_text.encode('utf-8')))
+    return base64.encodestring(des.encrypt(pad(clear_text.encode('utf-8'), BLOCK_SIZE)))
 
 def create_access_token_cookie(username):
     """Create access token. Returns string"""
@@ -67,11 +67,11 @@ def create_access_token_cookie(username):
 def decode_session_cookie(cookie):
     """Decode session cookie and return user name"""
     try:
-        encrypted = base64.decodestring(cookie)
-        des = DES.new(app.config['DES_KEY'], DES.MODE_ECB)
-        decrypted = des.decrypt(encrypted).rstrip()
+        encrypted = base64.decodestring(bytes(cookie,'utf-8'))
+        des = DES.new(bytes(app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
+        decrypted = unpad(des.decrypt(encrypted).rstrip(), BLOCK_SIZE)
         session_salt = app.config['SESSION_SALT']
-        if decrypted[-len(session_salt):] == session_salt:
+        if decrypted[-len(session_salt):].decode("utf-8") == session_salt:
             return decrypted[:-len(session_salt)]
         return None
     except:

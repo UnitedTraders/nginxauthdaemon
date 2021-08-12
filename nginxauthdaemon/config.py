@@ -7,7 +7,7 @@ class DefaultConfig(object):
     DES_KEY = '\xc8\x9a\x17\x8f\x17\xd7\x93:'
     AUTHENTICATOR = 'nginxauthdaemon.auth.DummyAuthenticator'
     JWT_PRIVATE_KEY = """
-    -----BEGIN RSA PRIVATE KEY-----
+-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCwvaYt11Xpp3CaEtSfyMQrKGMbmPBUJ0vs8vQk1ukkkaSbYOQt
 Sii9hQrUjz4BJjHhxgc0lZHLPnbSdU0j5f12Ug/dNxSQ+gj015K6DtZp9Ltcoa5h
 BbHb2+C9elCha9Kp8QpLH7PYz8L/Z2/YRlgodT1aqgczrsc0vH/EVzKCjQIDAQAB
