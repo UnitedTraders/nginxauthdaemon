@@ -9,6 +9,7 @@ from Crypto.Util.Padding import pad, unpad
 import jwt
 
 BLOCK_SIZE = 32 # Bytes
+cookies_max_age = 7 * 24 * 60 * 60 # 1week
 
 app = Flask(__name__)
 app.config.from_object('nginxauthdaemon.config.DefaultConfig')
@@ -59,8 +60,8 @@ def create_access_token_cookie(username):
     jwtPrivateKey = app.config['JWT_PRIVATE_KEY']
 
     now = int(time.time()) 
-    expiresAt = now + 300 # seconds
-    payload = {'jti': uuid.uuid4(), 'jti': now, 'nbf': 0, 'iss': 'crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
+    expiresAt = now + cookies_max_age # seconds
+    payload = {'jti': str(uuid.uuid4()), 'iat': now, 'nbf': 0, 'iss': 'crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
 
     return jwt.encode(payload, jwtPrivateKey, algorithm='RS256')
 
@@ -92,8 +93,8 @@ def show_login():
             resp = redirect(target)
             if target == custom_auth_url_prefix +'/login':
                 resp = redirect("/")
-            resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
-            resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username))
+            resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
+            resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
             return resp
         else:
             return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
@@ -121,8 +122,8 @@ def validate():
     if get_authenticator().authenticate(user_and_password[0], user_and_password[1]):
         resp = make_response("Username/password verified")
         username = user_and_password[0]
-        resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username))
-        resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username))
+        resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
+        resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
         return resp
     else:
         resp = make_response("Username/password failed", 401)
