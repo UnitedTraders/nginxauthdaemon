@@ -1,1 +1,1 @@
-from nginxauthdaemon import app
+from .nginxauthdaemon import app

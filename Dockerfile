@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM python:3.8-slim
 
 LABEL maintainer="Anton Markelov <a.markelov@unitedtraders.com>"
 

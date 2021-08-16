@@ -1,5 +1,5 @@
 import crowd
-from auth import Authenticator
+from nginxauthdaemon.auth import Authenticator
 
 
 class CrowdAuthenticator(Authenticator):
