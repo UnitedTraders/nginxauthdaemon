@@ -61,7 +61,7 @@ def create_access_token_cookie(username):
 
     now = int(time.time()) 
     expiresAt = now + cookies_max_age # seconds
-    payload = {'jti': str(uuid.uuid4()), 'iat': now, 'nbf': 0, 'iss': 'crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
+    payload = {'jti': str(uuid.uuid4()), 'iat': now, 'nbf': 0, 'iss': 'realm://crowd-ldap', 'real-issuer': 'crowd-ldap', 'exp': expiresAt, 'realm_access': {'roles': []}, 'user_id': username, 'typ': 'Bearer'}
 
     return jwt.encode(payload, jwtPrivateKey, algorithm='RS256')
 
