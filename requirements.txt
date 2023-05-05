@@ -6,7 +6,7 @@ Crowd==2.0.1
 crypto==1.4.1
 cryptography==39.0.1
 dnspython==1.16.0
-Flask==2.0.1
+Flask==2.2.5
 greenlet==1.1.1
 idna==3.2
 importlib-metadata==4.6.3
