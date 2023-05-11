@@ -47,7 +47,7 @@ setup(
         'Flask==2.3.2',
         'itsdangerous==0.24',
         'Jinja2==2.10.1',
-        'lxml==4.6.5',
+        'lxml==4.9.1',
         'MarkupSafe==0.23',
         'pyasn1==0.1.9',
         'pycryptodome == 3.9.0',
