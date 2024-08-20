@@ -52,7 +52,7 @@ setup(
         'pyasn1==0.1.9',
         'pycryptodome == 3.19.1',
         'requests>=2.24.0',
-        'Werkzeug==2.2.3',
+        'Werkzeug==3.0.3',
         'urllib3>=1.25.9'
     ],
     extras_require={
