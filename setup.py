@@ -50,7 +50,7 @@ setup(
         'lxml==4.9.1',
         'MarkupSafe==0.23',
         'pyasn1==0.1.9',
-        'pycryptodome == 3.9.0',
+        'pycryptodome == 3.19.1',
         'requests>=2.24.0',
         'Werkzeug==2.2.3',
         'urllib3>=1.25.9'
