@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-LABEL maintainer="Anton Markelov <a.markelov@unitedtraders.com>"
+LABEL maintainer="Leonid Vorobev <l.vorobev@unitedtraders.com>"
 
 WORKDIR /usr/src/app
 
