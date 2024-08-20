@@ -46,7 +46,7 @@ setup(
         'Crowd==2.0.1',
         'Flask==2.3.2',
         'itsdangerous==0.24',
-        'Jinja2==2.10.1',
+        'Jinja2==3.1.4',
         'lxml==4.9.1',
         'MarkupSafe==0.23',
         'pyasn1==0.1.9',
