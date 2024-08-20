@@ -28,4 +28,4 @@ toml==0.10.2
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 Werkzeug==2.3.3
-zipp==3.5.0
+zipp==3.19.1
