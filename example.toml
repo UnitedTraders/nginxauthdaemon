@@ -1,10 +1,12 @@
-REALM_NAME = "Example"
-AUTHENTICATOR = 'nginxauthdaemon.crowdauth.CrowdAuthenticator'
-CROWD_URL = 'https://localhost:8095/crowd/'
-CROWD_APP_NAME = 'test'
-CROWD_APP_PASSWORD = 'pass'
-AUTH_URL_PREFIX = '/auth'
-JWT_PRIVATE_KEY = """
+realm_name = "Example"
+authenticator = "crowd"
+crowd_url = "https://localhost:8095/crowd/"
+crowd_app_name = "test"
+crowd_app_password = "pass"
+auth_url_prefix = "/auth"
+session_salt = "replace-this-with-a-long-random-string-at-least-16-chars"
+des_key = "\u00c8\u009a\u0017\u008f\u0017\u00d7\u0093:"
+jwt_private_key = """
 -----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCwvaYt11Xpp3CaEtSfyMQrKGMbmPBUJ0vs8vQk1ukkkaSbYOQt
 Sii9hQrUjz4BJjHhxgc0lZHLPnbSdU0j5f12Ug/dNxSQ+gj015K6DtZp9Ltcoa5h

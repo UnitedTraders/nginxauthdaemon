@@ -69,7 +69,7 @@ def test_crowd_auth_via_login_endpoint(mock_crowd_class, client, app):
     mock_crowd_class.return_value = mock_server
 
     app.config.update({
-        'AUTHENTICATOR': 'nginxauthdaemon.crowdauth.CrowdAuthenticator',
+        'AUTHENTICATOR_CLASS': 'nginxauthdaemon.crowdauth.CrowdAuthenticator',
         'CROWD_URL': 'http://crowd.example.com/crowd/',
         'CROWD_APP_NAME': 'testapp',
         'CROWD_APP_PASSWORD': 'testpass',
@@ -86,7 +86,7 @@ def test_crowd_auth_via_login_endpoint(mock_crowd_class, client, app):
     assert client.get_cookie('auth_access_token') is not None
 
     # Reset
-    app.config['AUTHENTICATOR'] = 'nginxauthdaemon.auth.DummyAuthenticator'
+    app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'
 
 
 @patch('nginxauthdaemon.crowdauth.crowd.CrowdServer')
@@ -97,7 +97,7 @@ def test_crowd_auth_failure_via_login_endpoint(mock_crowd_class, client, app):
     mock_crowd_class.return_value = mock_server
 
     app.config.update({
-        'AUTHENTICATOR': 'nginxauthdaemon.crowdauth.CrowdAuthenticator',
+        'AUTHENTICATOR_CLASS': 'nginxauthdaemon.crowdauth.CrowdAuthenticator',
         'CROWD_URL': 'http://crowd.example.com/crowd/',
         'CROWD_APP_NAME': 'testapp',
         'CROWD_APP_PASSWORD': 'testpass',
@@ -112,4 +112,4 @@ def test_crowd_auth_failure_via_login_endpoint(mock_crowd_class, client, app):
     assert client.get_cookie('auth_session') is None
 
     # Reset
-    app.config['AUTHENTICATOR'] = 'nginxauthdaemon.auth.DummyAuthenticator'
+    app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'

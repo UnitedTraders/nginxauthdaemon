@@ -9,9 +9,9 @@ Authentication daemon for nginx-proxied or nginx-served applications.
 1. Create virtual environment for the daemon: `virtualenv env`
 2. Activate it: `. ./env/bin/activate`
 3. Install dependencies: `pip install -r requirements.txt -r requirements-run.txt`
-4. Create config file overriding default values, see [Daemon Configuration](#daemon-configuration). **NB!** You need to override default `SESSION_SALT` and `DES_KEY` for security.
-5. Setup env variable `DAEMON_SETTINGS` pointing to your config file.
-6. Run daemon with your favorite WSGI server, e.g. `gunicorn nginxauthdaemon:app`.
+4. Create config file in TOML format, see [Daemon Configuration](#daemon-configuration). **NB!** You need to override default `SESSION_SALT`, `DES_KEY`, and `JWT_PRIVATE_KEY` for security.
+5. Setup env variable `DAEMON_SETTINGS` pointing to your `.toml` config file.
+6. Run daemon with your favorite WSGI server, e.g. `gunicorn nginxauthdaemon.wsgi:app`.
 7. Update nginx.conf. See [NGINX Configuration](#nginx-configuration).
 8. Reload nginx (`nginx -t reload`).
 9. Test your setup.
@@ -19,7 +19,7 @@ Authentication daemon for nginx-proxied or nginx-served applications.
 ## Docker
 
 - Build: `docker build -t nginxauthdaemon .`
-- Launch: `docker run -p 5000:5000 -v $(pwd)/example.cfg:/example.cfg -e DAEMON_SETTINGS=/example.cfg -e WEB_CONCURRENCY=4 nginxauthdaemon`
+- Launch: `docker run -p 5000:5000 -v $(pwd)/example.toml:/app/config.toml -e DAEMON_SETTINGS=/app/config.toml -e WEB_CONCURRENCY=4 nginxauthdaemon`
 - Compose file located in `docker-compose.yml.sample`
 
 ## Development Setup
@@ -44,47 +44,52 @@ This project uses [SpecKit](https://speckit.dev) for AI-assisted specification, 
 ### Running Locally
 
 ```bash
-DAEMON_SETTINGS=/path/to/config.cfg python -m nginxauthdaemon.nginxauthdaemon
+DAEMON_SETTINGS=/path/to/config.toml python -m nginxauthdaemon.nginxauthdaemon
 # Or with gunicorn:
-DAEMON_SETTINGS=/path/to/config.cfg gunicorn -b 0.0.0.0:5000 -k eventlet nginxauthdaemon:app
+DAEMON_SETTINGS=/path/to/config.toml gunicorn -b 0.0.0.0:5000 -k eventlet nginxauthdaemon.wsgi:app
 ```
 
 ## Daemon Configuration
 
-Basic configuration properties:
+Configuration uses TOML format. Point `DAEMON_SETTINGS` environment variable to your `.toml` config file.
+
+Basic configuration properties (TOML field names are lowercase):
 
 | Option | Description |
 |--------|-------------|
-| `REALM_NAME` | Realm name shown on login page |
-| `SESSION_COOKIE` | Session cookie name. Typically you do not need to change this. |
-| `TARGET_HEADER` | Header used to pass protected URL from NGINX |
-| `SESSION_SALT` | Long string used as salt for creation of session key. |
-| `DES_KEY` | 8-byte DES encryption key |
-| `AUTHENTICATOR` | Authenticator class name, by default `auth.DummyAuthenticator` |
+| `realm_name` | Realm name shown on login page |
+| `session_cookie` | Session cookie name. Typically you do not need to change this. |
+| `target_header` | Header used to pass protected URL from NGINX |
+| `session_salt` | Long string used as salt for creation of session key. **Must override.** |
+| `des_key` | 8-byte DES encryption key. **Must override.** |
+| `authenticator` | Authenticator type: `"crowd"` (default) or `"dummy"` (test only) |
+| `jwt_private_key` | RSA private key in PEM format for access token signing. **Must override.** |
+| `auth_url_prefix` | URL prefix for auth routes (default: `/auth`) |
+| `testing` | Set to `true` to enable DummyAuthenticator (default: `false`) |
 
 ### Authenticators
 
-Available out-of-the-box:
+Available authenticators (set via `authenticator` config field):
 
-| Authenticator | Description |
-|---------------|-------------|
-| `nginxauthdaemon.auth.DummyAuthenticator` | Simplest authenticator checking username equals password |
-| `nginxauthdaemon.crowdauth.CrowdAuthenticator` | Atlassian Crowd based authenticator |
+| Value | Description |
+|-------|-------------|
+| `"crowd"` | Atlassian Crowd based authenticator (default, production use) |
+| `"dummy"` | Simplest authenticator checking username equals password (test only, requires `testing = true`) |
 
-Crowd authenticator additional options:
+Crowd authenticator additional options (required when `authenticator = "crowd"`):
 
 | Option | Description |
 |--------|-------------|
-| `CROWD_URL` | Crowd server URL, e.g. `http://localhost:8095/crowd/` |
-| `CROWD_APP_NAME` | Crowd application name |
-| `CROWD_APP_PASSWORD` | Crowd application password |
+| `crowd_url` | Crowd server URL, e.g. `https://localhost:8095/crowd/` |
+| `crowd_app_name` | Crowd application name |
+| `crowd_app_password` | Crowd application password |
 
 ### Access Token Options
 
 | Option | Description |
 |--------|-------------|
-| `JWT_PRIVATE_KEY` | RS256 secret key for access token signing |
-| `ACCESS_TOKEN_COOKIE` | Access token cookie name |
+| `jwt_private_key` | RS256 secret key for access token signing |
+| `access_token_cookie` | Access token cookie name |
 
 ## NGINX Configuration
 

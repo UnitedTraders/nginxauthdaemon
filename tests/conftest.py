@@ -1,21 +1,19 @@
 import os
 import base64
 
-# Set DAEMON_SETTINGS before importing the app — required because the app
-# reads AUTH_URL_PREFIX at module level during import.
-os.environ['DAEMON_SETTINGS'] = os.path.join(
-    os.path.dirname(__file__), 'test_config.cfg'
-)
-
 import pytest
 import jwt
 from cryptography.hazmat.primitives import serialization
-from nginxauthdaemon import app as flask_app
+
+from nginxauthdaemon.nginxauthdaemon import create_app
 
 
-# RSA public key derived from DefaultConfig private key for JWT verification
-def _get_public_key():
-    private_key_pem = flask_app.config['JWT_PRIVATE_KEY'].strip().encode()
+_test_config_path = os.path.join(os.path.dirname(__file__), 'test_config.toml')
+
+
+def _get_public_key(app):
+    """Derive RSA public key from the app's configured private key."""
+    private_key_pem = app.config['JWT_PRIVATE_KEY'].strip().encode()
     private_key = serialization.load_pem_private_key(private_key_pem, password=None)
     public_key = private_key.public_key()
     return public_key.public_bytes(
@@ -27,11 +25,11 @@ def _get_public_key():
 @pytest.fixture
 def app():
     """Create Flask application configured for testing."""
+    flask_app = create_app(_test_config_path)
     flask_app.config.update({
         'TESTING': True,
-        'AUTHENTICATOR': 'nginxauthdaemon.auth.DummyAuthenticator',
     })
-    return flask_app
+    yield flask_app
 
 
 @pytest.fixture
@@ -42,9 +40,9 @@ def client(app):
 
 
 @pytest.fixture
-def public_key():
+def public_key(app):
     """RSA public key for JWT verification."""
-    return _get_public_key()
+    return _get_public_key(app)
 
 
 def make_basic_auth_header(username, password):

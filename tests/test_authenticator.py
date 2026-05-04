@@ -16,9 +16,9 @@ def test_dummy_authenticator_rejects_non_matching_credentials():
 
 
 def test_custom_authenticator_loaded_via_config(client, app):
-    """A custom authenticator class can be plugged in via configuration."""
-    # Configure a custom authenticator that always succeeds
-    app.config['AUTHENTICATOR'] = 'tests.test_authenticator.AlwaysTrueAuthenticator'
+    """A custom authenticator class can be plugged in via AUTHENTICATOR_CLASS config."""
+    # Configure a custom authenticator class path
+    app.config['AUTHENTICATOR_CLASS'] = 'tests.test_authenticator.AlwaysTrueAuthenticator'
 
     resp = client.post('/auth/login', data={
         'user': 'anyone',
@@ -28,12 +28,12 @@ def test_custom_authenticator_loaded_via_config(client, app):
     assert resp.status_code == 302  # Redirect = successful login
 
     # Reset to default
-    app.config['AUTHENTICATOR'] = 'nginxauthdaemon.auth.DummyAuthenticator'
+    app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'
 
 
 def test_invalid_authenticator_path_raises_error(client, app):
     """An invalid authenticator class path causes an ImportError."""
-    app.config['AUTHENTICATOR'] = 'nonexistent.module.FakeAuthenticator'
+    app.config['AUTHENTICATOR_CLASS'] = 'nonexistent.module.FakeAuthenticator'
 
     with pytest.raises((ImportError, ModuleNotFoundError)):
         client.post('/auth/login', data={
@@ -43,7 +43,7 @@ def test_invalid_authenticator_path_raises_error(client, app):
         })
 
     # Reset to default
-    app.config['AUTHENTICATOR'] = 'nginxauthdaemon.auth.DummyAuthenticator'
+    app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'
 
 
 # --- Test helper: custom authenticator for testing pluggability ---
