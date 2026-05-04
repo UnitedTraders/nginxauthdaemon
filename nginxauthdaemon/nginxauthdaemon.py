@@ -53,7 +53,7 @@ def create_session_cookie(username):
     """Create session cookie. Returns string"""
     des = DES.new(bytes(app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
     clear_text = username + app.config['SESSION_SALT']
-    return base64.encodestring(des.encrypt(pad(clear_text.encode('utf-8'), BLOCK_SIZE)))
+    return base64.b64encode(des.encrypt(pad(clear_text.encode('utf-8'), BLOCK_SIZE))).decode('ascii')
 
 def create_access_token_cookie(username):
     """Create access token. Returns string"""
@@ -68,9 +68,9 @@ def create_access_token_cookie(username):
 def decode_session_cookie(cookie):
     """Decode session cookie and return user name"""
     try:
-        encrypted = base64.decodestring(bytes(cookie,'utf-8'))
+        encrypted = base64.b64decode(bytes(cookie,'utf-8'))
         des = DES.new(bytes(app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
-        decrypted = unpad(des.decrypt(encrypted).rstrip(), BLOCK_SIZE)
+        decrypted = unpad(des.decrypt(encrypted), BLOCK_SIZE)
         session_salt = app.config['SESSION_SALT']
         if decrypted[-len(session_salt):].decode("utf-8") == session_salt:
             return decrypted[:-len(session_salt)]
