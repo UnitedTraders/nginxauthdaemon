@@ -23,11 +23,18 @@ DAEMON_SETTINGS=/path/to/config.cfg gunicorn -b 0.0.0.0:5000 -k eventlet nginxau
 docker build -t nginxauthdaemon .
 docker run -p 5000:5000 -v $(pwd)/example.cfg:/example.cfg -e DAEMON_SETTINGS=/example.cfg -e WEB_CONCURRENCY=4 nginxauthdaemon
 
-# Install as package (editable)
-pip install -e .
+# Run tests
+.venv/bin/python -m pytest tests/ -v
 ```
 
-There are no tests in this project currently (coverage is listed as a dev dependency but no test files exist).
+## Testing
+
+Integration tests live in `tests/`. Run with:
+
+```bash
+pip install -r requirements-test.txt -r requirements.txt cryptography
+DAEMON_SETTINGS=tests/test_config.cfg pytest tests/ -v
+```
 
 ## Architecture
 

@@ -20,8 +20,6 @@ __pycache__/
 *.sample
 LICENSE
 MANIFEST.in
-setup.py
-setup.cfg
-docker-compose.yml.sample
+MANIFEST.in
 nginx.example.conf
 htmlcov/

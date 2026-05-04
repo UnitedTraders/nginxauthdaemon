@@ -8,7 +8,7 @@ Authentication daemon for nginx-proxied or nginx-served applications.
 
 1. Create virtual environment for the daemon: `virtualenv env`
 2. Activate it: `. ./env/bin/activate`
-3. Install nginxauthdaemon from pypi: `pip install nginxauthdaemon`
+3. Install dependencies: `pip install -r requirements.txt -r requirements-run.txt`
 4. Create config file overriding default values, see [Daemon Configuration](#daemon-configuration). **NB!** You need to override default `SESSION_SALT` and `DES_KEY` for security.
 5. Setup env variable `DAEMON_SETTINGS` pointing to your config file.
 6. Run daemon with your favorite WSGI server, e.g. `gunicorn nginxauthdaemon:app`.
