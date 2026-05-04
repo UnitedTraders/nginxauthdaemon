@@ -1,4 +1,4 @@
-FROM python:3.9-slim AS base
+FROM python:3.13-slim AS base
 
 LABEL org.opencontainers.image.source="https://github.com/UnitedTraders/nginxauthdaemon"
 LABEL org.opencontainers.image.description="Authentication daemon for nginx-proxied applications"
