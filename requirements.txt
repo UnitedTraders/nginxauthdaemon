@@ -22,7 +22,7 @@ MarkupSafe==2.1.1
 pycparser==2.23
 pydantic_core==2.33.1
 python-dotenv==1.2.2
-requests==2.32.5
+requests==2.33.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.6.3
