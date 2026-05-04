@@ -29,8 +29,6 @@ jobs:
           pip install cryptography
 
       - name: Run tests
-        env:
-          DAEMON_SETTINGS: tests/test_config.cfg
         run: pytest tests/ -v
 
   build-and-push:

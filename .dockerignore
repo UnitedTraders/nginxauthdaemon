@@ -16,10 +16,10 @@ __pycache__/
 *.md
 *.rst
 *.cfg
+*.toml
 *.yml
 *.sample
 LICENSE
-MANIFEST.in
 MANIFEST.in
 nginx.example.conf
 htmlcov/
