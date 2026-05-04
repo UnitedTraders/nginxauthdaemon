@@ -1,128 +1,191 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ realm }}</title>
     <style>
-        @import url(http://weloveiconfonts.com/api/?family=entypo);
-        @import url(http://fonts.googleapis.com/css?family=Roboto);
-
-        /* zocial */
-        [class*="entypo-"]:before {
-            font-family: 'entypo', sans-serif;
+        :root {
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --bg-primary: #0f0f17;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-input: rgba(255, 255, 255, 0.08);
+            --bg-input-focus: rgba(255, 255, 255, 0.12);
+            --text-primary: rgba(255, 255, 255, 0.9);
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --border: rgba(255, 255, 255, 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
         }
 
         *,
-        *:before,
-        *:after {
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
+        *::before,
+        *::after {
             box-sizing: border-box;
-        }
-
-        h2 {
-            color: rgba(255, 255, 255, .8);
-            margin-left: 12px;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background: #272125;
-            font-family: 'Roboto', sans-serif;
-
+            font-family: var(--font-stack);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        form {
-            position: relative;
-            margin: 50px auto;
-            width: 380px;
-            height: auto;
+        main {
+            width: 90%;
+            max-width: 420px;
         }
 
-        input {
-            padding: 16px;
-            border-radius: 7px;
-            border: 0px;
-            background: rgba(255, 255, 255, .2);
-            display: block;
-            margin: 15px;
-            width: 300px;
-            color: white;
-            font-size: 18px;
-            height: 54px;
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px 32px;
         }
 
-        input:focus {
-            outline-color: rgba(0, 0, 0, 0);
-            background: rgba(255, 255, 255, .95);
-            color: #e74c3c;
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 32px;
         }
 
-        button {
-            float: right;
-            height: 121px;
-            width: 50px;
-            border: 0px;
-            background: #e74c3c;
-            border-radius: 7px;
-            padding: 10px;
-            color: white;
-            font-size: 22px;
+        .error-message {
+            background: var(--error-bg);
+            color: var(--error);
+            border-left: 3px solid var(--error);
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
-        .inputUserIcon {
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .sr-only {
             position: absolute;
-            top: 68px;
-            right: 80px;
-            color: white;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
-        .inputPassIcon {
-            position: absolute;
-            top: 136px;
-            right: 80px;
-            color: white;
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            font-size: 16px;
+            line-height: 1.5;
+            transition: background 0.2s ease, border-color 0.2s ease;
+            outline: none;
         }
 
-        input::-webkit-input-placeholder {
-            color: white;
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: var(--text-secondary);
         }
 
-        input:focus::-webkit-input-placeholder {
-            color: #e74c3c;
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            background: var(--bg-input-focus);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px 24px;
+            margin-top: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-stack);
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            outline: none;
+        }
+
+        button[type="submit"]:hover {
+            background: var(--accent-hover);
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+        button[type="submit"]:focus-visible {
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
+        }
+
+        input:invalid.touched {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px var(--error-bg);
         }
     </style>
 </head>
-
 <body>
 
-<form action="{{ url_for('show_login') }}" method="POST">
-    <h2><span class="entypo-login"></span> Login to {{ realm }}</h2>
-    <button class="submit"><span class="entypo-lock"></span></button>
+<main>
+    <div class="card">
+        <h1>{{ realm }}</h1>
 
-    <span class="entypo-user inputUserIcon"></span>
-    <input type="text" class="user" placeholder="username" name="user"/>
+        {% if error %}
+        <div class="error-message" role="alert">{{ error }}</div>
+        {% endif %}
 
-    <span class="entypo-key inputPassIcon"></span>
-    <input type="password" class="pass" placeholder="password" name="pass"/>
+        <form action="{{ url_for('show_login') }}" method="POST">
+            <div class="input-group">
+                <label for="user" class="sr-only">Username</label>
+                <input type="text" id="user" name="user" placeholder="Username" autocomplete="username" required>
+            </div>
 
-    <div>{{ error }}</div>
-    <input type="hidden" name="target" value="{{ target }}"/>
-</form>
+            <div class="input-group">
+                <label for="pass" class="sr-only">Password</label>
+                <input type="password" id="pass" name="pass" placeholder="Password" autocomplete="current-password" required>
+            </div>
 
-<script src="https://code.jquery.com/jquery-3.1.0.slim.min.js"
-        integrity="sha256-cRpWjoSOw5KcyIOaZNo4i6fZ9tKPhYYb6i5T9RSVJG8="
-        crossorigin="anonymous"></script>
-<script language="JavaScript">
-    $(".user").focusin(function () {
-        $(".inputUserIcon").css("color", "#e74c3c");
-    }).focusout(function () {
-        $(".inputUserIcon").css("color", "white");
-    });
+            <input type="hidden" name="target" value="{{ target }}">
 
-    $(".pass").focusin(function () {
-        $(".inputPassIcon").css("color", "#e74c3c");
-    }).focusout(function () {
-        $(".inputPassIcon").css("color", "white");
+            <button type="submit">Sign in</button>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var inputs = this.querySelectorAll('input[required]');
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].classList.add('touched');
+        }
     });
 </script>
 
