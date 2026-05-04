@@ -97,9 +97,9 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 - **pycryptodome 3.23.0** - DES encryption for session cookies
 - **PyJWT 2.12.1** - JWT token generation
 - **Crowd 3.1.0** - Atlassian Crowd client library
-- **pydantic 2.11.3** - configuration validation
-- **pydantic-settings 2.9.1** - TOML config file loading
-- **gunicorn 23.0.0** - production WSGI server (gthread workers)
+- **pydantic 2.13.3** - configuration validation
+- **pydantic-settings 2.14.0** - TOML config file loading
+- **gunicorn 25.3.0** - production WSGI server (gthread workers)
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
