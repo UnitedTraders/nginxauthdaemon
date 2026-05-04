@@ -104,5 +104,5 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/003-modern-login-page/plan.md
+at specs/004-auth-error-handling/plan.md
 <!-- SPECKIT END -->
