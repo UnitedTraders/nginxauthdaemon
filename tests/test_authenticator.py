@@ -31,16 +31,16 @@ def test_custom_authenticator_loaded_via_config(client, app):
     app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'
 
 
-def test_invalid_authenticator_path_raises_error(client, app):
-    """An invalid authenticator class path causes an ImportError."""
+def test_invalid_authenticator_path_returns_503(client, app):
+    """An invalid authenticator class path returns 503, not an unhandled error."""
     app.config['AUTHENTICATOR_CLASS'] = 'nonexistent.module.FakeAuthenticator'
 
-    with pytest.raises((ImportError, ModuleNotFoundError)):
-        client.post('/auth/login', data={
-            'user': 'test',
-            'pass': 'test',
-            'target': '/'
-        })
+    resp = client.post('/auth/login', data={
+        'user': 'test',
+        'pass': 'test',
+        'target': '/'
+    })
+    assert resp.status_code == 503
 
     # Reset to default
     app.config['AUTHENTICATOR_CLASS'] = 'nginxauthdaemon.auth.DummyAuthenticator'

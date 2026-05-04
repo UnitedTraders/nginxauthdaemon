@@ -4,7 +4,7 @@ import time
 import uuid
 import importlib
 from flask import Flask
-from flask import render_template, request, make_response, redirect, g
+from flask import render_template, request, make_response, redirect, g, current_app
 from Crypto.Cipher import DES
 from Crypto.Util.Padding import pad, unpad
 import jwt
@@ -124,15 +124,19 @@ def create_app(config_path=None):
             username = request.form.get('user')
             password = request.form.get('pass')
             target = request.form.get('target')
-            if username is not None and get_authenticator().authenticate(username, password):
-                resp = redirect(target)
-                if target == auth_url_prefix + '/login':
-                    resp = redirect("/")
-                resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
-                resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
-                return resp
-            else:
-                return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
+            try:
+                if username is not None and get_authenticator().authenticate(username, password):
+                    resp = redirect(target)
+                    if target == auth_url_prefix + '/login':
+                        resp = redirect("/")
+                    resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
+                    resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
+                    return resp
+                else:
+                    return render_template('login.html', realm=app.config['REALM_NAME'], error="Please check user name and password"), 401
+            except Exception:
+                current_app.logger.exception("Authentication backend error during login")
+                return render_template('login.html', realm=app.config['REALM_NAME'], error="Authentication service is temporarily unavailable. Please try again later."), 503
 
     @app.route(auth_url_prefix + '/validate', methods=['GET'])
     def validate():
@@ -149,15 +153,21 @@ def create_app(config_path=None):
             resp.headers['Cache-Control'] = 'no-cache'
             return resp
 
-        if get_authenticator().authenticate(user_and_password[0], user_and_password[1]):
-            resp = make_response("Username/password verified")
-            username = user_and_password[0]
-            resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
-            resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
-            return resp
-        else:
-            resp = make_response("Username/password failed", 401)
-            resp.headers['WWW-Authenticate'] = 'Basic realm=' + app.config['REALM_NAME']
+        try:
+            if get_authenticator().authenticate(user_and_password[0], user_and_password[1]):
+                resp = make_response("Username/password verified")
+                username = user_and_password[0]
+                resp.set_cookie(app.config['SESSION_COOKIE'], create_session_cookie(username), max_age=cookies_max_age)
+                resp.set_cookie(app.config['ACCESS_TOKEN_COOKIE'], create_access_token_cookie(username), max_age=cookies_max_age)
+                return resp
+            else:
+                resp = make_response("Username/password failed", 401)
+                resp.headers['WWW-Authenticate'] = 'Basic realm=' + app.config['REALM_NAME']
+                resp.headers['Cache-Control'] = 'no-cache'
+                return resp
+        except Exception:
+            current_app.logger.exception("Authentication backend error during validation")
+            resp = make_response("Authentication service unavailable", 503)
             resp.headers['Cache-Control'] = 'no-cache'
             return resp
 
