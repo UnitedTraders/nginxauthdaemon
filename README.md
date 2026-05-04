@@ -46,7 +46,7 @@ This project uses [SpecKit](https://speckit.dev) for AI-assisted specification, 
 ```bash
 DAEMON_SETTINGS=/path/to/config.toml python -m nginxauthdaemon.nginxauthdaemon
 # Or with gunicorn:
-DAEMON_SETTINGS=/path/to/config.toml gunicorn -b 0.0.0.0:5000 -k eventlet nginxauthdaemon.wsgi:app
+DAEMON_SETTINGS=/path/to/config.toml gunicorn -b 0.0.0.0:5000 -k gthread --threads 4 nginxauthdaemon.wsgi:app
 ```
 
 ## Daemon Configuration

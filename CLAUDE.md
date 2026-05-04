@@ -17,7 +17,7 @@ pip install -r requirements-run.txt
 # Run locally (development)
 DAEMON_SETTINGS=/path/to/config.toml python -m nginxauthdaemon.nginxauthdaemon
 # Or with gunicorn:
-DAEMON_SETTINGS=/path/to/config.toml gunicorn -b 0.0.0.0:5000 -k eventlet nginxauthdaemon.wsgi:app
+DAEMON_SETTINGS=/path/to/config.toml gunicorn -b 0.0.0.0:5000 -k gthread --threads 4 nginxauthdaemon.wsgi:app
 
 # Docker
 docker build -t nginxauthdaemon .
@@ -99,10 +99,10 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 - **Crowd 3.1.0** - Atlassian Crowd client library
 - **pydantic 2.11.3** - configuration validation
 - **pydantic-settings 2.9.1** - TOML config file loading
-- **gunicorn 23.0.0 + eventlet 0.40.4** - production WSGI server
+- **gunicorn 23.0.0** - production WSGI server (gthread workers)
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/002-pydantic-config-validation/plan.md
+at specs/003-modern-login-page/plan.md
 <!-- SPECKIT END -->

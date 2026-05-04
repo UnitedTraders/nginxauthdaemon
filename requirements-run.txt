@@ -1,8 +1,2 @@
 # Production runtime dependencies
 gunicorn==23.0.0
-eventlet==0.40.4
-
-# Transitive dependencies
-dnspython==1.16.0
-greenlet==3.2.5
-packaging==26.2
