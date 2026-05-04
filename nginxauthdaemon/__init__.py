@@ -1,1 +1,1 @@
-from .nginxauthdaemon import app
+from .nginxauthdaemon import create_app  # noqa: F401

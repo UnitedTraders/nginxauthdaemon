@@ -1,23 +1,28 @@
-FROM python:3.8-slim
+FROM python:3.13-slim AS base
 
-LABEL maintainer="Leonid Vorobev <l.vorobev@unitedtraders.com>"
+LABEL org.opencontainers.image.source="https://github.com/UnitedTraders/nginxauthdaemon"
+LABEL org.opencontainers.image.description="Authentication daemon for nginx-proxied applications"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies in a single layer; copy both requirements files together
+COPY requirements.txt requirements-run.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-run.txt
 
-COPY requirements-run.txt ./
-RUN pip install --no-cache-dir -r requirements-run.txt
+# Create non-root user before copying app code
+RUN useradd --no-create-home --uid 1001 nginxauthdaemon
 
+# Copy application code
 COPY nginxauthdaemon nginxauthdaemon
-
-RUN chgrp -R 0 /usr/src/app && \
-  chmod -R g=u /usr/src/app && \
-  useradd -u 1001 -g 0 nginxauthdaemon
 
 USER 1001
 
 EXPOSE 5000
 
-CMD [ "gunicorn", "-b", "0.0.0.0:5000", "-k", "eventlet", "nginxauthdaemon:app" ]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/auth/login')"]
+
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "-k", "eventlet", "nginxauthdaemon.wsgi:app"]
