@@ -76,11 +76,11 @@ Key settings (override in your config file):
 
 ## Dependencies
 
-- **Flask 2.3.2** - web framework
-- **pycryptodome 3.19.1** - DES encryption for session cookies
-- **PyJWT 2.4.0** - JWT token generation
-- **Crowd 2.0.1** - Atlassian Crowd client library
-- **gunicorn + eventlet** - production WSGI server
+- **Flask 3.1.3** - web framework
+- **pycryptodome 3.23.0** - DES encryption for session cookies
+- **PyJWT 2.12.1** - JWT token generation
+- **Crowd 3.1.0** - Atlassian Crowd client library
+- **gunicorn 23.0.0 + eventlet 0.40.4** - production WSGI server
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
