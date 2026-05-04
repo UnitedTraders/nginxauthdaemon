@@ -21,7 +21,7 @@ PyJWT==2.4.0
 PyYAML==5.4.1
 requests==2.32.2
 semantic-version==2.8.5
-setuptools-rust==0.12.1
+setuptools==82.0.1
 shellescape==3.8.1
 six==1.16.0
 toml==0.10.2
