@@ -96,6 +96,7 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 - **Flask 3.1.3** - web framework
 - **pycryptodome 3.23.0** - DES encryption for session cookies
 - **PyJWT 2.12.1** - JWT token generation
+- **cryptography 48.0.0** - RSA key support for PyJWT RS256 signing
 - **Crowd 3.1.0** - Atlassian Crowd client library
 - **pydantic 2.13.3** - configuration validation
 - **pydantic-settings 2.14.0** - TOML config file loading
