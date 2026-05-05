@@ -33,7 +33,7 @@ Integration tests live in `tests/`. Run with:
 
 ```bash
 pip install -r requirements-test.txt -r requirements.txt cryptography
-DAEMON_SETTINGS=tests/test_config.cfg pytest tests/ -v
+DAEMON_SETTINGS=tests/test_config.toml pytest tests/ -v
 ```
 
 ## Architecture
@@ -79,7 +79,7 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 |---------|---------|
 | `authenticator` | Authenticator type: `"crowd"` (default) or `"dummy"` (test only) |
 | `session_salt` | Salt appended before DES encryption (must override for security) |
-| `des_key` | 8-byte DES key (must override for security) |
+| `des_key` | Base64-encoded 8-byte DES key (generate with: `openssl rand -base64 8`; must override for security) |
 | `jwt_private_key` | RSA private key for JWT signing (must override for security) |
 | `auth_url_prefix` | URL prefix for auth routes (default: `/auth`) |
 | `realm_name` | Displayed on login page |
@@ -104,5 +104,5 @@ Configuration uses TOML format. Key settings (override in your `.toml` config fi
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/004-auth-error-handling/plan.md
+at specs/005-base64-des-key/plan.md
 <!-- SPECKIT END -->

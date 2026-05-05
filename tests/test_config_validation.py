@@ -3,7 +3,7 @@ import os
 import pytest
 from pydantic import ValidationError
 
-from nginxauthdaemon.config import AppConfig, load_config, _DEFAULT_PLACEHOLDER_SALT
+from nginxauthdaemon.config import AppConfig, load_config, _DEFAULT_PLACEHOLDER_SALT, _DEFAULT_PLACEHOLDER_DES_KEY
 
 
 _test_config_path = os.path.join(os.path.dirname(__file__), 'test_config.toml')
@@ -14,7 +14,7 @@ def _make_config(**overrides):
     defaults = {
         'realm_name': 'Test',
         'session_salt': 'test-salt-value-long-enough-for-validation',
-        'des_key': '\xc8\x9a\x17\x8f\x17\xd7\x93:',
+        'des_key': 'VGVzdEtleTg=',
         'authenticator': 'dummy',
         'testing': True,
         'auth_url_prefix': '/auth',
@@ -44,16 +44,26 @@ C4cnTxWQ/CrQSwiSHy5Xr13jVLhVgmtudfJsfzUgxw8=
 
 class TestDesKeyValidation:
     def test_valid_des_key_accepted(self):
-        config = _make_config(des_key='\xc8\x9a\x17\x8f\x17\xd7\x93:')
-        assert len(config.des_key.encode('raw_unicode_escape')) == 8
+        config = _make_config(des_key='VGVzdEtleTg=')
+        assert config.des_key == 'VGVzdEtleTg='
 
     def test_des_key_wrong_length_rejected(self):
-        with pytest.raises(ValidationError, match='des_key must be exactly 8 bytes'):
-            _make_config(des_key='short')
+        # "dGVzdA==" decodes to b"test" (4 bytes)
+        with pytest.raises(ValidationError, match='des_key must decode to exactly 8 bytes'):
+            _make_config(des_key='dGVzdA==')
 
     def test_des_key_too_long_rejected(self):
-        with pytest.raises(ValidationError, match='des_key must be exactly 8 bytes'):
-            _make_config(des_key='toolongkey1234567')
+        # "dGVzdHRlc3R0ZXN0dA==" decodes to b"testtestt" (9 bytes)
+        with pytest.raises(ValidationError, match='des_key must decode to exactly 8 bytes'):
+            _make_config(des_key='dGVzdHRlc3R0ZXN0dA==')
+
+    def test_des_key_invalid_base64_rejected(self):
+        with pytest.raises(ValidationError, match='des_key is not valid base64'):
+            _make_config(des_key='not-valid-base64!!!')
+
+    def test_des_key_default_placeholder_rejected(self):
+        with pytest.raises(ValidationError, match='des_key must be changed from the default placeholder'):
+            _make_config(des_key=_DEFAULT_PLACEHOLDER_DES_KEY)
 
 
 class TestSessionSaltValidation:
@@ -236,7 +246,8 @@ class TestFlaskConfigPopulation:
         assert app.config['AUTHENTICATOR'] == 'dummy'
         assert app.config['AUTHENTICATOR_CLASS'] == 'nginxauthdaemon.auth.DummyAuthenticator'
         assert app.config['TESTING'] is True
-        assert len(app.config['DES_KEY'].encode('raw_unicode_escape')) == 8
+        assert app.config['DES_KEY'] == 'VGVzdEtleTg='
+        assert app.config['DES_KEY_BYTES'] == b'TestKey8'
 
 
 # --- US-005: Env var override ---
@@ -250,7 +261,7 @@ class TestEnvVarOverride:
             'authenticator = "dummy"\n'
             'testing = true\n'
             'session_salt = "test-salt-from-file-long-enough"\n'
-            'des_key = "\\u00c8\\u009a\\u0017\\u008f\\u0017\\u00d7\\u0093:"\n'
+            'des_key = "VGVzdEtleTg="\n'
             'jwt_private_key = """\n'
             '-----BEGIN RSA PRIVATE KEY-----\n'
             'MIICXAIBAAKBgQCwvaYt11Xpp3CaEtSfyMQrKGMbmPBUJ0vs8vQk1ukkkaSbYOQt\n'

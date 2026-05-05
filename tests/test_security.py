@@ -57,7 +57,7 @@ def test_cookie_with_wrong_salt_is_rejected(client, app):
     from Crypto.Util.Padding import pad
 
     BLOCK_SIZE = 32
-    des_key = bytes(app.config['DES_KEY'], encoding="raw_unicode_escape")
+    des_key = app.config['DES_KEY_BYTES']
     des = DES.new(des_key, DES.MODE_ECB)
     # Use wrong salt
     clear_text = 'testuser' + 'WRONG_SALT_VALUE'

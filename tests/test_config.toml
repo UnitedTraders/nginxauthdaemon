@@ -2,7 +2,7 @@ authenticator = "dummy"
 testing = true
 auth_url_prefix = "/auth"
 session_salt = "test-salt-value-long-enough-for-validation"
-des_key = "\u00c8\u009a\u0017\u008f\u0017\u00d7\u0093:"
+des_key = "VGVzdEtleTg="
 jwt_private_key = """
 -----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCwvaYt11Xpp3CaEtSfyMQrKGMbmPBUJ0vs8vQk1ukkkaSbYOQt
