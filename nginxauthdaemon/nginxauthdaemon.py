@@ -56,7 +56,7 @@ def parse_authorization(original_value):
 def create_session_cookie(username):
     """Create session cookie. Returns string"""
     from flask import current_app
-    des = DES.new(bytes(current_app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
+    des = DES.new(current_app.config['DES_KEY_BYTES'], DES.MODE_ECB)
     clear_text = username + current_app.config['SESSION_SALT']
     return base64.b64encode(des.encrypt(pad(clear_text.encode('utf-8'), BLOCK_SIZE))).decode('ascii')
 
@@ -78,7 +78,7 @@ def decode_session_cookie(cookie):
     from flask import current_app
     try:
         encrypted = base64.b64decode(bytes(cookie, 'utf-8'))
-        des = DES.new(bytes(current_app.config['DES_KEY'], encoding="raw_unicode_escape"), DES.MODE_ECB)
+        des = DES.new(current_app.config['DES_KEY_BYTES'], DES.MODE_ECB)
         decrypted = unpad(des.decrypt(encrypted), BLOCK_SIZE)
         session_salt = current_app.config['SESSION_SALT']
         if decrypted[-len(session_salt):].decode("utf-8") == session_salt:

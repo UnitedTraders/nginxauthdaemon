@@ -1,3 +1,4 @@
+import base64
 import os
 import sys
 import importlib
@@ -10,6 +11,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict, TomlConfigSettin
 
 # Default placeholder salt — config validation rejects this in production
 _DEFAULT_PLACEHOLDER_SALT = "3LGFrKBEgEu4KRS40zrqw9JoyYxMKexKUQfYRf2iAb0="
+
+# Default placeholder DES key — config validation rejects this in production
+_DEFAULT_PLACEHOLDER_DES_KEY = "yJoXjxfXkzo="
 
 # Default placeholder RSA key — config validation rejects this in production
 _DEFAULT_PLACEHOLDER_KEY = """
@@ -45,7 +49,7 @@ class AppConfig(BaseSettings):
     session_cookie: str = "auth_session"
     target_header: str = "X-Target"
     session_salt: str = _DEFAULT_PLACEHOLDER_SALT
-    des_key: str = '\xc8\x9a\x17\x8f\x17\xd7\x93:'
+    des_key: str = _DEFAULT_PLACEHOLDER_DES_KEY
     authenticator: str = "crowd"
     jwt_private_key: str = _DEFAULT_PLACEHOLDER_KEY
     access_token_cookie: str = "auth_access_token"
@@ -61,9 +65,14 @@ class AppConfig(BaseSettings):
     @field_validator('des_key')
     @classmethod
     def validate_des_key(cls, v):
-        encoded = v.encode('raw_unicode_escape')
-        if len(encoded) != 8:
-            raise ValueError(f'des_key must be exactly 8 bytes, got {len(encoded)}')
+        if v == _DEFAULT_PLACEHOLDER_DES_KEY:
+            raise ValueError('des_key must be changed from the default placeholder value')
+        try:
+            decoded = base64.b64decode(v)
+        except Exception:
+            raise ValueError('des_key is not valid base64')
+        if len(decoded) != 8:
+            raise ValueError(f'des_key must decode to exactly 8 bytes, got {len(decoded)}')
         return v
 
     @field_validator('session_salt')
@@ -149,6 +158,8 @@ class AppConfig(BaseSettings):
                 result[field_name.upper()] = value
         # Add the resolved authenticator class path for get_authenticator()
         result['AUTHENTICATOR_CLASS'] = AUTHENTICATOR_MAP[self.authenticator]
+        # Pre-decode the DES key from base64 to bytes for use by DES cipher
+        result['DES_KEY_BYTES'] = base64.b64decode(self.des_key)
         return result
 
 
