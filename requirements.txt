@@ -5,7 +5,7 @@ PyJWT==2.13.0
 cryptography==48.0.1
 Crowd==3.1.0
 pydantic==2.13.3
-pydantic-settings==2.14.0
+pydantic-settings==2.14.2
 
 # Transitive dependencies (pinned for reproducibility)
 annotated-types==0.7.0
